@@ -9,7 +9,7 @@ import * as XLSX from "xlsx";
 const AdminBlogTable = () => {
   const [blogs, setBlogs] = useState([]);
   const [editBlogId, setEditBlogId] = useState(null);
-  const [deleteBlogId, setDeleteBlogId] = useState(null); // For modal
+  const [deleteBlogId, setDeleteBlogId] = useState(null);
 
   const fetchBlogs = () => {
     axios.get(`${import.meta.env.VITE_APP_BASE_URL}/api/blogs`).then((res) => {
@@ -33,7 +33,6 @@ const AdminBlogTable = () => {
     }
   };
 
-  // PDF Download
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.text("Blog Management Table", 14, 16);
@@ -59,7 +58,6 @@ const AdminBlogTable = () => {
     doc.save("blogs.pdf");
   };
 
-  // Excel Download
   const downloadExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(
       blogs.map((blog, index) => ({
@@ -83,9 +81,7 @@ const AdminBlogTable = () => {
           onSave={() => {
             setEditBlogId(null);
             fetchBlogs();
-            toast.success(
-              editBlogId ? "Blog updated successfully!" : "Blog added successfully!"
-            );
+            toast.success(editBlogId ? "Blog updated successfully!" : "Blog added successfully!");
           }}
         />
         <Toaster position="top-right" reverseOrder={false} />
@@ -93,91 +89,125 @@ const AdminBlogTable = () => {
     );
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl mx-auto relative">
+    <div className="min-h-screen bg-gray-50 py-10 px-6">
       <Toaster position="top-right" reverseOrder={false} />
 
-      <div className="flex justify-between mb-6">
-        <h2 className="text-2xl font-semibold">Blog Management</h2>
-        <div className="space-x-2">
-          <button
-            onClick={() => setEditBlogId("")}
-            className="bg-green-600 text-white px-4 py-2 rounded-md"
-          >
-            + Add New Blog
-          </button>
-          <button
-            onClick={downloadPDF}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md"
-          >
-            Download PDF
-          </button>
-          <button
-            onClick={downloadExcel}
-            className="bg-yellow-500 text-white px-4 py-2 rounded-md"
-          >
-            Download Excel
-          </button>
+      <div className="max-w-7xl mx-auto bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800 tracking-tight">
+              Blog Management
+            </h2>
+            <p className="text-gray-500 mt-1">
+              Manage, edit, and export your blogs easily.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setEditBlogId("")}
+              className="bg-green-700 hover:bg-green-900 text-white px-3 py-2 rounded-lg font-medium transition-all"
+            >
+              + Add New Blog
+            </button>
+            <button
+              onClick={downloadPDF}
+              className="bg-blue-600 hover:bg-blue-800 text-white px-3 py-2 rounded-lg font-medium transition-all"
+            >
+              Export PDF
+            </button>
+            <button
+              onClick={downloadExcel}
+              className="bg-yellow-500 hover:bg-yellow-700 text-white px-3 py-2 rounded-lg font-medium transition-all"
+            >
+              Export Excel
+            </button>
+          </div>
+        </div>
+
+        {/* Table Section */}
+        <div className="overflow-x-auto rounded-lg border border-gray-200">
+          <table className="w-full text-sm text-left text-gray-700">
+            <thead className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 uppercase text-xs font-semibold">
+              <tr>
+                <th className="px-6 py-3 border-b">#</th>
+                <th className="px-6 py-3 border-b">Title</th>
+                <th className="px-6 py-3 border-b">Author</th>
+                <th className="px-6 py-3 border-b">Updated</th>
+                <th className="px-6 py-3 border-b text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {blogs.length > 0 ? (
+                blogs.map((blog, index) => (
+                  <tr
+                    key={blog._id}
+                    className="hover:bg-gray-50 transition-all border-b"
+                  >
+                    <td className="px-6 py-3 font-medium">{index + 1}</td>
+                    <td className="px-6 py-3">
+                      <p className="font-semibold text-gray-900">
+                        {blog.title}
+                      </p>
+                      <p className="text-gray-500 text-xs">{blog.subtitle}</p>
+                    </td>
+                    <td className="px-6 py-3">{blog.authorName}</td>
+                    <td className="px-6 py-3">
+                      {new Date(blog.updatedAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-3 text-center space-x-2">
+                      <button
+                        onClick={() => setEditBlogId(blog._id)}
+                        className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        onClick={() => setDeleteBlogId(blog._id)}
+                        className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="text-center py-6 text-gray-500 italic"
+                  >
+                    No blogs found. Click “Add New Blog” to create one.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
-
-      <table className="min-w-full border">
-        <thead className="bg-gray-100 text-left">
-          <tr>
-            <th className="px-4 py-2 border">#</th>
-            <th className="px-4 py-2 border">Title</th>
-            <th className="px-4 py-2 border">Author</th>
-            <th className="px-4 py-2 border">Updated</th>
-            <th className="px-4 py-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {blogs.map((blog, index) => (
-            <tr key={blog._id}>
-              <td className="px-4 py-2 border">{index + 1}</td>
-              <td className="px-4 py-2 border">{blog.title} {blog.subtitle}</td>
-              <td className="px-4 py-2 border">{blog.authorName}</td>
-              <td className="px-4 py-2 border">
-                {new Date(blog.updatedAt).toLocaleDateString()}
-              </td>
-              <td className="px-4 py-2 border space-x-2">
-                <button
-                  onClick={() => setEditBlogId(blog._id)}
-                  className="bg-blue-500 text-white px-3 py-1 rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => setDeleteBlogId(blog._id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
       {/* Delete Confirmation Modal */}
       {deleteBlogId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white text-center rounded-lg p-6 w-96 shadow-lg space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Confirm Delete
+          <div className="bg-white rounded-2xl shadow-xl p-8 w-96 text-center space-y-4 border border-gray-200">
+            <h3 className="text-xl font-bold text-gray-900">
+              ⚠️ Confirm Deletion
             </h3>
-            <p className="text-gray-600">
-              Are you sure you want to delete this blog?
+            <p className="text-gray-600 text-sm">
+              Are you sure you want to delete this blog? This action cannot be
+              undone.
             </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-4 mt-6">
               <button
                 onClick={() => setDeleteBlogId(null)}
-                className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300"
+                className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-all"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700"
+                className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-all"
               >
                 Delete
               </button>

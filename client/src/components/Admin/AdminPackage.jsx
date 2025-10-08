@@ -3,7 +3,15 @@ import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
 
 const categories = ["Family", "Honeymoon", "Premium", "Luxury", "Best Seller"];
-const initialPackageState = { title: "", location: "", desc: "", trend: false, price: "", img: "", category: "Family" };
+const initialPackageState = {
+  title: "",
+  location: "",
+  desc: "",
+  trend: false,
+  price: "",
+  img: "",
+  category: "Family",
+};
 
 const AdminPackage = () => {
   const [view, setView] = useState("list");
@@ -12,7 +20,6 @@ const AdminPackage = () => {
   const [formData, setFormData] = useState(initialPackageState);
   const [editingId, setEditingId] = useState(null);
   const [activeTab, setActiveTab] = useState("Family");
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
 
@@ -20,9 +27,7 @@ const AdminPackage = () => {
     setLoading(true);
     try {
       const { data } = await axios.get(`${import.meta.env.VITE_APP_BASE_URL}/api/packages`);
-      if (Array.isArray(data)) {
-        setPackages(data);
-      }
+      if (Array.isArray(data)) setPackages(data);
     } catch (error) {
       toast.error("Could not fetch packages.");
     } finally {
@@ -36,8 +41,8 @@ const AdminPackage = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
@@ -63,8 +68,8 @@ const AdminPackage = () => {
     try {
       await axios.delete(`${import.meta.env.VITE_APP_BASE_URL}/api/packages/${deletingId}`);
       toast.success("Package deleted successfully!");
-      fetchPackages(); 
-    } catch (error) {
+      fetchPackages();
+    } catch {
       toast.error("Failed to delete package.");
     } finally {
       setShowDeleteModal(false);
@@ -89,7 +94,7 @@ const AdminPackage = () => {
       }
       setView("list");
       fetchPackages();
-    } catch (error) {
+    } catch {
       toast.error("Failed to save package.");
     }
   };
@@ -97,139 +102,234 @@ const AdminPackage = () => {
   const filteredPackages = packages.filter((pkg) => pkg.category === activeTab);
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl mx-auto relative">
+    <div className="bg-gray-50 min-h-screen py-8 px-4 md:px-10">
       <Toaster position="top-right" />
 
-      {view === "form" && (
-        <div>
-          <div className="flex justify-between items-center border-b pb-4 mb-6">
-            <h2 className="text-2xl font-semibold">{editingId ? "Edit Package" : "Add New Package"}</h2>
-            <button
-              onClick={() => setView("list")}
-              className="px-4 py-2 bg-gray-600 text-white font-semibold rounded-md shadow-sm hover:bg-gray-700"
-            >← Back to List</button>
-          </div>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Package Title</label>
-                <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-md" />
-              </div>
-              <div>
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                <input type="text" id="location" name="location" value={formData.location} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-md" />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="desc" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <textarea id="desc" name="desc" value={formData.desc} onChange={handleChange} rows="3" className="w-full px-4 py-2 border border-gray-300 rounded-md"></textarea>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">Price</label>
-                <input type="text" id="price" name="price" value={formData.price} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-md" />
-              </div>
-              <div>
-                <label htmlFor="img" className="block text-sm font-medium text-gray-700 mb-1">Image Path</label>
-                <input type="text" id="img" name="img" value={formData.img} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-md" />
-              </div>
-              <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <select id="category" name="category" value={formData.category} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-md">
-                  {categories.map((cat) => (<option key={cat} value={cat}>{cat}</option>))}
-                </select>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input id="trend" name="trend" type="checkbox" checked={formData.trend} onChange={handleChange} className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
-                <label htmlFor="trend" className="ml-2 block text-sm text-gray-900">Mark as Trending</label>
-              </div>
-              <button type="submit" className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700">Save Package</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {view === "list" && (
-        <div>
-          <div className="flex justify-between items-center border-b pb-4 mb-6">
-            <h2 className="text-2xl font-semibold">Manage Packages</h2>
-            <button onClick={handleAddNew} className="px-4 py-2 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700">
-              + Add New Package
-            </button>
-          </div>
-
-          <div className="flex flex-wrap gap-2 mb-4">
-            {categories.map((cat) => (
+      <div className="bg-white rounded-2xl shadow-md p-6 md:p-8 max-w-7xl mx-auto">
+        {view === "form" ? (
+          <>
+            {/* Header */}
+            <div className="flex justify-between items-center border-b pb-4 mb-6">
+              <h2 className="text-2xl font-semibold text-gray-800">
+                {editingId ? " Edit Package" : " Add New Package"}
+              </h2>
               <button
-                key={cat}
-                onClick={() => setActiveTab(cat)}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === cat
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  }`}
+                onClick={() => setView("list")}
+                className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 transition"
               >
-                {cat}
+                ← Back
               </button>
-            ))}
-          </div>
+            </div>
 
-          {loading ? (
-            <p className="text-center text-gray-500 py-10">Loading...</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full border">
-                <thead className="bg-gray-100 text-left">
-                  <tr>
-                    <th className="px-4 py-2 border">#</th>
-                    <th className="px-4 py-2 border">Title</th>
-                    <th className="px-4 py-2 border">Category</th>
-                    <th className="px-4 py-2 border">Price</th>
-                    <th className="px-4 py-2 border">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredPackages.length > 0 ? (
-                    filteredPackages.map((pkg, index) => (
-                      <tr key={pkg._id}>
-                        <td className="border px-4 py-2">{index + 1}</td>
-                        <td className="border px-4 py-2 font-medium">{pkg.title}</td>
-                        <td className="border px-4 py-2">{pkg.category}</td>
-                        <td className="border px-4 py-2">{pkg.price}</td>
-                        <td className="border px-4 py-2 space-x-2 whitespace-nowrap">
-                          <button onClick={() => handleEdit(pkg)} className="text-blue-600 hover:underline">Edit</button>
-                          <button onClick={() => handleDeleteClick(pkg._id)} className="text-red-600 hover:underline">Delete</button>
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-gray-700 font-medium mb-1">Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter package title"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-1">Location</label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter location"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-medium mb-1">Description</label>
+                <textarea
+                  name="desc"
+                  value={formData.desc}
+                  onChange={handleChange}
+                  rows="3"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter description..."
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-gray-700 font-medium mb-1">Price</label>
+                  <input
+                    type="text"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                    placeholder="₹ 5000"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-1">Image URL</label>
+                  <input
+                    type="text"
+                    name="img"
+                    value={formData.img}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                    placeholder="/images/sample.jpg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-1">Category</label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                  >
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <label className="flex items-center gap-2 text-gray-700">
+                  <input
+                    type="checkbox"
+                    name="trend"
+                    checked={formData.trend}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-blue-600 border-gray-300"
+                  />
+                  Mark as Trending
+                </label>
+
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                >
+                  💾 Save Package
+                </button>
+              </div>
+            </form>
+          </>
+        ) : (
+          <>
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between md:items-center border-b pb-4 mb-6 gap-4">
+              <h2 className="text-2xl font-semibold text-gray-800"> Manage Packages</h2>
+              <button
+                onClick={handleAddNew}
+                className="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 transition"
+              >
+                + Add Package
+              </button>
+            </div>
+
+            {/* Category Tabs */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveTab(cat)}
+                  className={`px-4 py-2 text-sm rounded-full font-medium transition ${activeTab === cat
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Table */}
+            {loading ? (
+              <p className="text-center text-gray-500 py-10">Loading packages...</p>
+            ) : (
+              <div className="overflow-x-auto rounded-lg border border-gray-200">
+                <table className="min-w-full bg-white text-sm text-gray-700">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-4 py-3 text-left">#</th>
+                      <th className="px-4 py-3 text-left">Title</th>
+                      <th className="px-4 py-3 text-left">Category</th>
+                      <th className="px-4 py-3 text-left">Price</th>
+                      <th className="px-4 py-3 text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPackages.length ? (
+                      filteredPackages.map((pkg, index) => (
+                        <tr
+                          key={pkg._id}
+                          className="border-t hover:bg-gray-50 transition"
+                        >
+                          <td className="px-4 py-3">{index + 1}</td>
+                          <td className="px-4 py-3 font-medium">{pkg.title}</td>
+                          <td className="px-4 py-3">{pkg.category}</td>
+                          <td className="px-4 py-3 font-semibold text-blue-600">
+                            ₹{pkg.price}
+                          </td>
+                          <td className="px-4 py-3 flex flex-wrap gap-2">
+                            <button
+                              onClick={() => handleEdit(pkg)}
+                              className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                            >
+                             ✏️ Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClick(pkg._id)}
+                              className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
+                            >
+                             🗑️ Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="5"
+                          className="text-center py-6 text-gray-500"
+                        >
+                          No packages found in "{activeTab}".
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr><td colSpan="5" className="text-center py-4 text-gray-500">No packages found in the "{activeTab}" category.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
+      {/* Delete Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white p-6 rounded-lg w-96 shadow-xl space-y-4 text-center">
-            <h3 className="text-lg font-bold">Confirm Deletion</h3>
-            <p className="text-sm text-gray-600">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 px-4">
+          <div className="bg-white rounded-lg p-6 shadow-xl w-full max-w-sm text-center">
+            <h3 className="text-lg font-bold text-gray-800 mb-2">Confirm Deletion</h3>
+            <p className="text-gray-600 mb-4 text-sm">
               Are you sure you want to delete this package? This action cannot be undone.
             </p>
-            <div className="flex justify-center gap-4 pt-2">
+            <div className="flex justify-center gap-4">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-6 py-2 rounded-md bg-gray-200 hover:bg-gray-300 font-semibold"
+                className="px-5 py-2 bg-gray-200 rounded hover:bg-gray-300"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
-                className="px-6 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 font-semibold"
+                className="px-5 py-2 bg-red-600 text-white rounded hover:bg-red-700"
               >
                 Delete
               </button>
