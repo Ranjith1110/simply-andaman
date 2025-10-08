@@ -123,8 +123,8 @@ const BlogContent = () => {
             </div>
           </div>
 
-          <div className="border-t border-gray-200 px-6 py-4 flex items-center justify-between bg-white mt-10">
-            <p className="text-sm text-gray-600">Share this post</p>
+          <div className="border-t border-gray-200 px-6 py-4 flex flex-wrap items-center justify-between bg-white mt-10">
+            <p className="text-sm text-gray-600 mb-4">Share this post</p>
             <div className="flex items-center gap-3">
               <button className="flex items-center gap-1 text-sm px-3 py-1 border rounded-md hover:bg-gray-100 transition">
                 <svg
