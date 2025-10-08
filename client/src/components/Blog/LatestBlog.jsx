@@ -10,7 +10,7 @@ const LatestBlog = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/blogs")
+      .get(`${import.meta.env.VITE_APP_BASE_URL}/api/blogs`)
       .then((res) => setBlogs(res.data))
       .catch((err) => console.error("Error fetching blogs:", err));
   }, []);

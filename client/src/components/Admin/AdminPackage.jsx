@@ -61,7 +61,7 @@ const AdminPackage = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/packages/${deletingId}`);
+      await axios.delete(`${import.meta.env.VITE_APP_BASE_URL}/api/packages/${deletingId}`);
       toast.success("Package deleted successfully!");
       fetchPackages(); 
     } catch (error) {
@@ -81,10 +81,10 @@ const AdminPackage = () => {
 
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/packages/${editingId}`, formData);
+        await axios.put(`${import.meta.env.VITE_APP_BASE_URL}/api/packages/${editingId}`, formData);
         toast.success("Package updated successfully!");
       } else {
-        await axios.post("http://localhost:5000/api/packages", formData);
+        await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/api/packages`, formData);
         toast.success("Package added successfully!");
       }
       setView("list");
