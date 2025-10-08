@@ -148,7 +148,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="text-center pt-8 pb-6 text-gray-600 relative z-10">
-          <p className="text-sm">Copyright © 2024. Crafted with love.</p>
+          <p className="text-sm">Copyright © 2024. <a href="https://rancotechnology.com/" target="_blank">Developed by Ranco Technology</a></p>
         </div>
       </div>
     </footer>

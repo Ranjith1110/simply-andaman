@@ -48,7 +48,7 @@ const SectionHeader = () => (
         <img
           src={assets.Birds}
           alt="Flying Birds"
-          className="absolute top-0 right-[-10%]  w-20 sm:w-28 lg:w-36"
+          className="absolute top-0 right-0  w-20 sm:w-28 lg:w-36"
         />
       </div>
       <p className="mt-3 text-sm sm:text-base text-gray-500 max-w-2xl mx-auto">
