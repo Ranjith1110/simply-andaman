@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { assets } from '../assets/frontend_assets/assets';
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -16,6 +17,9 @@ function Navbar() {
             [name]: !prev[name],
         }));
     };
+
+    const navigate = useNavigate();
+
 
     return (
         <>
@@ -84,7 +88,7 @@ function Navbar() {
                             </ul>
                         </li>
                         <li>
-                            <a href="#" className="hover:text-blue-600 cursor-pointer">Ferries</a>
+                            <a onClick={() => navigate("/admin-login")} className="hover:text-blue-600 cursor-pointer">Ferries</a>
                         </li>
                         <li className="relative group">
                             <button className="hover:text-blue-600 flex items-center cursor-pointer select-none">
