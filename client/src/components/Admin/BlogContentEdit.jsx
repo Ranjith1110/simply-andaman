@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-// Define the base URL from the environment variable once to use throughout the component
-const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL;
-
 const BlogContentEdit = ({ blogId, onCancel, onSave }) => {
     const [formData, setFormData] = useState({
         title: "",
@@ -17,8 +14,7 @@ const BlogContentEdit = ({ blogId, onCancel, onSave }) => {
 
     useEffect(() => {
         if (blogId) {
-            // Use the API_BASE_URL variable
-            axios.get(`${API_BASE_URL}/api/blogs/${blogId}`).then((res) => {
+            axios.get(`${import.meta.env.VITE_APP_BASE_URL}/api/blogs/${blogId}`).then((res) => {
                 setFormData(res.data);
             });
         }
@@ -38,11 +34,9 @@ const BlogContentEdit = ({ blogId, onCancel, onSave }) => {
     const handleSave = async () => {
         try {
             if (blogId) {
-                // FIX: Use the API_BASE_URL variable for updating
-                await axios.put(`${API_BASE_URL}/api/blogs/${blogId}`, formData);
+                await axios.put(`${import.meta.env.VITE_APP_BASE_URL}/api/blogs/${blogId}`, formData);
             } else {
-                // FIX: Use the API_BASE_URL variable for creating
-                await axios.post(`${API_BASE_URL}/api/blogs/add`, formData);
+                await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/api/blogs/add`, formData);
             }
             onSave();
         } catch (error) {

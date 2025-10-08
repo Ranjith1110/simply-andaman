@@ -11,10 +11,10 @@ const BlogHero = () => {
     const fetchBlog = async () => {
       try {
         if (id) {
-          const res = await axios.get(`http://localhost:5000/api/blogs/${id}`);
+          const res = await axios.get(`${import.meta.env.VITE_APP_BASE_URL}/api/blogs/${id}`);
           setBlog(res.data);
         } else {
-          const res = await axios.get("http://localhost:5000/api/blogs");
+          const res = await axios.get(`${import.meta.env.VITE_APP_BASE_URL}/api/blogs`);
           if (res.data.length > 0) setBlog(res.data[0]);
         }
       } catch (err) {
