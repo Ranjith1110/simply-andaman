@@ -135,7 +135,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Decorations */}
-        <div className="absolute bottom-15 left-1/2 -translate-x-1/2 z-10">
+        <div className="absolute bottom-18 left-1/2 -translate-x-1/2 z-10">
           <img src={assets.Footergirl} alt="girl" className="h-32" />
         </div>
 
@@ -148,7 +148,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="text-center pt-8 pb-6 text-gray-600 relative z-10">
-          <p className="text-sm">Copyright © 2024. <a href="https://rancotechnology.com/" target="_blank">Developed by Ranco Technology</a></p>
+          <p className="text-sm">Copyright © 2024. Crafted with Love. <br /><a href="https://rancotechnology.com/" target="_blank">Developed by Ranco Technology</a></p>
         </div>
       </div>
     </footer>
