@@ -90,6 +90,9 @@ function Navbar() {
                         <li>
                             <a onClick={() => navigate("/admin-login")} className="hover:text-blue-600 cursor-pointer">Login</a>
                         </li>
+                        <li>
+                            <a onClick={() => navigate("/blog")} className="hover:text-blue-600 cursor-pointer">Blog</a>
+                        </li>
                         <li className="relative group">
                             <button className="hover:text-blue-600 flex items-center cursor-pointer select-none">
                                 More
