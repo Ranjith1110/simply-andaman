@@ -7,7 +7,7 @@ const BlogContent = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-6 lg:px-8 py-14 grid lg:grid-cols-5 gap-10">
-      <aside className="lg:col-span-2 sticky top-6 h-fit bg-white border border-gray-200 rounded-lg p-6">
+      <aside className="lg:col-span-2 md:sticky sm:fixed top-6 h-fit bg-white border border-gray-200 rounded-lg p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Table of Contents
         </h3>
